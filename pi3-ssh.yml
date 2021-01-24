@@ -3,19 +3,19 @@
   vars_files:
     - variables.yml
   vars:
-     # The `ansible_ssh` vars are needed for establishing the initial password-based connection
-     ansible_ssh_pass: raspberry
-     ansible_ssh_common_args: "-o PreferredAuthentications=password -o StrictHostKeyChecking=no"
- 
+    # The `ansible_ssh` vars are needed for establishing the initial password-based connection.
+    ansible_ssh_pass: raspberry
+    ansible_ssh_common_args: "-o PreferredAuthentications=password -o StrictHostKeyChecking=no"
+
   gather_facts: no
   become: yes
 
   tasks:
     - name: Validate Configuration
-      assert: 
+      assert:
         that: ssh_github_user is defined or ssh_public_key_files is defined
 
-    - name: Deploy a local SSH Key 
+    - name: Deploy local SSH Keys
       authorized_key:
         user: "{{ ansible_user }}"
         key: "{{ lookup('file', item) }}"

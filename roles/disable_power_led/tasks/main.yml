@@ -1,4 +1,7 @@
 ---
+# Based on:
+# https://raspberrypi.stackexchange.com/questions/697/how-do-i-control-the-system-leds-using-my-software
+
 # - name: Turn off PWR LED
 #   shell: "echo 0 > /sys/class/leds/led1/brightness"
 
@@ -17,4 +20,3 @@
       echo none > /sys/class/leds/led1/trigger
       echo 0 > /sys/class/leds/led1/brightness
       #
-
