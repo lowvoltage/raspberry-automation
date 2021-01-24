@@ -1,0 +1,22 @@
+---
+# SSH keys' setup: At lest one of the two options should be defined
+ssh_github_user: lowvoltage
+ssh_public_key_files:
+- ~/.ssh/id_rsa.pub
+- ~/.ssh/id_ed25519.pub
+
+# Debian packages to provision
+apt_packages:
+- vim
+- cec-utils
+
+# Configurations done via `raspi-config`: Generic
+raspi_config_targets:
+- { name: hostname, target: raspi3, reboot: True }
+- { name: boot_splash, target: 1, ignore_errors: True }
+- { name: camera, target: 0 }
+- { name: wifi_country, target: BG, ignore_errors: True }
+
+# Configurations done via `raspi-config`: Timezone
+raspi_config_target_timezone: Europe/Sofia
+

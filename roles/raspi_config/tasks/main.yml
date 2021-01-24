@@ -3,10 +3,11 @@
   command:
     cmd: "raspi-config nonint get_{{ item.name }}"
   register: current_value
-  changed_when: False		# This is a read-only operation
-  ignore_errors: item.ignore_errors | default(False)
+  changed_when: False        # This is a read-only operation
+  ignore_errors: "{{ item.ignore_errors | default(False) | bool }}"
 
-- debug:
+- name: Report current value
+  debug:
     var: current_value.stdout
 
 - name: Set {{ item.name }} to `{{ item.target }}`
@@ -18,7 +19,10 @@
 - name: Reboot?
   debug:
     msg: "Notifying handlers"
-  when: (item['reboot'] | default(False) | bool) and set_task.changed
+  when: (item.reboot | default(False) | bool) and set_task.changed
   changed_when: True
   notify: do_reboot
+
+- name: Flush handlers
+  meta: flush_handlers
 

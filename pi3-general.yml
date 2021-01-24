@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_files:
+    - variables.yml
+
+  gather_facts: no
+  become: yes
+
+  pre_tasks:
+    - name: Install packages
+      apt:
+        pkg: "{{ apt_packages }}"
+        state: present
+
+    - name: Configure `raspi_config`
+      include_role:
+        name: raspi_config
+      with_items: "{{ raspi_config_targets }}"
+
+  roles:
+  - raspi_config_timezone
+  - disable_power_led
+  - raspi_config_expandfs
+
