@@ -1,0 +1,13 @@
+---
+- name: Read current timezone
+  slurp:
+    src: /etc/timezone
+  register: current_timezone
+
+- debug:
+    var: current_timezone.content | b64decode 
+
+- name: Set timezone to `{{ target }}`
+  command:
+    cmd: "raspi-config nonint do_change_timezone {{ target }}"
+  when: current_timezone.content | b64decode | trim != target | string

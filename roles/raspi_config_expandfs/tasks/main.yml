@@ -1,0 +1,15 @@
+    - name: Get can_expand
+      command:
+        cmd: "raspi-config nonint get_can_expand"
+      register: current_can_expand
+      changed_when: false           # This is a read-only operation
+
+    - debug:
+        var: current_can_expand.stdout
+
+    - name: do_expand_rootfs on restart`
+      command:
+        cmd: "raspi-config nonint do_expand_rootfs"
+      when: current_can_expand.stdout != "0"
+      notify:
+        - do_reboot

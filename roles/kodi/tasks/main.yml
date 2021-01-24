@@ -1,0 +1,37 @@
+- name: Copy the KODI service definition
+  copy:
+    src: kodi.service
+    dest: /lib/systemd/system/kodi.service
+
+- name: Get boot_cli
+  command:
+    cmd: "raspi-config nonint get_boot_cli"
+  register: current_boot_cli
+  changed_when: false           # This is a read-only operation
+
+- debug:
+    var: current_boot_cli.stdout
+
+- name: Set Boot to console
+  command:
+    cmd: "raspi-config nonint do_boot_behaviour B2"
+  when: current_boot_cli.stdout != "0"
+
+- name: Allocate 256Mb RAM for GPU
+  lineinfile:
+    dest: /boot/config.txt
+    regexp: "^gpu_mem="
+    line: "gpu_mem=256"
+    state: present
+
+- name: Install KODI
+  apt:
+    name: kodi
+    state: present
+    update_cache: yes
+
+- name: Enable KODI service
+  service:
+    name: kodi
+    enabled: yes
+

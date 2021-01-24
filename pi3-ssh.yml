@@ -1,0 +1,43 @@
+---
+- hosts: servers_user_pass
+  vars:
+#    github_user: lowvoltage
+     ssh_public_key_file: ~/.ssh/id_rsa.pub
+ 
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Validate configuration
+      assert: 
+        that: github_user is defined or ssh_public_key_file is defined
+
+    - name: Deploy local SSH Key 
+      authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ lookup('file', ssh_public_key_file) }}"
+        state: present
+      when: ssh_public_key_file is defined
+
+    - name: Deploy SSH Keys from GitHub
+      authorized_key:
+        user: "{{ ansible_user }}"
+        key: "https://github.com/{{ github_user }}.keys"
+        state: present
+      when: github_user is defined
+
+    - name: Disable Password Authentication
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: "PasswordAuthentication no"
+        state: present
+      notify:
+        - restart ssh
+
+  handlers:
+    - name: restart ssh
+      service:
+        name: sshd
+        state: restarted
+

@@ -1,0 +1,15 @@
+[servers_user_pass]
+pi3-raw
+
+[servers_ssh_key]
+pi3-kodi 
+
+[all:vars]
+ansible_host=raspi3.lan
+ansible_python_interpreter=/usr/bin/python3
+ansible_connection=ssh
+ansible_user=pi
+
+[servers_user_pass:vars]
+ansible_ssh_pass=raspberry
+ansible_ssh_common_args="-o PreferredAuthentications=password -o StrictHostKeyChecking=no"

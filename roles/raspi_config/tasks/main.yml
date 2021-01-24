@@ -1,0 +1,24 @@
+---
+- name: Get {{ item.name }}
+  command:
+    cmd: "raspi-config nonint get_{{ item.name }}"
+  register: current_value
+  changed_when: False		# This is a read-only operation
+  ignore_errors: item.ignore_errors | default(False)
+
+- debug:
+    var: current_value.stdout
+
+- name: Set {{ item.name }} to `{{ item.target }}`
+  command:
+    cmd: "raspi-config nonint do_{{ item.name }} {{ item.target }}"
+  when: current_value.stdout != item.target | string
+  register: set_task
+
+- name: Reboot?
+  debug:
+    msg: "Notifying handlers"
+  when: (item['reboot'] | default(False) | bool) and set_task.changed
+  changed_when: True
+  notify: do_reboot
+

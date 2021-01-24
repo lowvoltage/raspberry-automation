@@ -1,0 +1,20 @@
+---
+# - name: Turn off PWR LED
+#   shell: "echo 0 > /sys/class/leds/led1/brightness"
+
+# - name: Disable PWR LED triggers
+#   shell: "echo none > /sys/class/leds/led1/trigger"
+
+- name: Make changes persistent after reboot
+  ansible.builtin.blockinfile:
+    path: /etc/rc.local
+    insertbefore: "exit 0"
+    marker_begin: "PWR_LED BEGIN"
+    marker_end: "PWR_LED END"
+    block: |
+      #
+      # Turn off and disable the PWR LED
+      echo none > /sys/class/leds/led1/trigger
+      echo 0 > /sys/class/leds/led1/brightness
+      #
+
