@@ -1,0 +1,38 @@
+- name: Install ZIP
+  apt:
+    name: zip
+    state: present
+
+- name: Ensures source and backup paths exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ kodi_dot_path }}"
+    - "{{ kodi_backups_path }}"
+
+- name: Copy the Backup script
+  template:
+    src: kodi_backup.sh.j2
+    dest: "{{ kodi_dot_path }}/kodi_backup.sh"
+    owner: pi
+    group: pi
+    mode: +x
+
+- name: Copy the KODI-Backup service and timer definitions
+  template:
+    src: "{{ item }}.j2"
+    dest: "/lib/systemd/system/{{ item }}"
+  with_items:
+    - kodi_backup.service
+    - kodi_backup.timer
+  notify:
+    - reload_systemd
+
+- name: Enable and start KODI-Backup Timer
+  systemd:
+    name: kodi_backup.timer
+    enabled: yes
+    state: started
+  notify:
+    - reload_systemd

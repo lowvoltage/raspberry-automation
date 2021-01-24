@@ -1,0 +1,5 @@
+# Based on:
+# https://www.reddit.com/r/bashonubuntuonwindows/comments/gxzgka/wsl_and_autocrlf_safecrlf_whats_the_best/
+* text=auto eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf

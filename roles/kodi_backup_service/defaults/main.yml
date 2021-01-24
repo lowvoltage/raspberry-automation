@@ -1,0 +1,10 @@
+---
+# The path where Kodi's configuration is stored
+kodi_dot_path: /home/pi/.kodi
+
+# The path where the backup ZIPs should be placed
+kodi_backups_path: /home/pi
+
+# Backup service's timer pattern (cron): Run every day, at 01:01:00
+# https://wiki.archlinux.org/index.php/Systemd/Timers
+kodi_backup_timer_calendar: "*-*-* 01:01:00"

@@ -1,0 +1,8 @@
+[Unit]
+Description = Kodi Automated Backups - Service
+
+[Service]
+User = pi
+Group = pi
+Type = oneshot
+ExecStart = {{ kodi_dot_path }}/kodi_backup.sh

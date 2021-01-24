@@ -1,0 +1,8 @@
+#!/bin/bash
+
+TIMESTAMP=`date +"%Y%m%d-%H%M"`
+FILENAME="kodi-backup-$TIMESTAMP.zip"
+BACKUP_PATH="{{ kodi_backups_path }}/$FILENAME"
+
+echo $BACKUP_PATH
+zip -r $BACKUP_PATH {{ kodi_dot_path }}

@@ -6,4 +6,4 @@
 
   roles:
   - kodi
-
+  - kodi_backup_service
