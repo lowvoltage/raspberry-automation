@@ -1,0 +1,42 @@
+#    Expected var structure:
+#
+#    samba_shares:
+#      - { name: Shared, folder: /home/user/shared }
+#      ...
+
+- name: Check for required variables
+  assert:
+    that: samba_shares is defined
+
+- name: Install Samba
+  apt:
+    name: samba
+    state: present
+
+- name: Setup a dedicated folder and subfolders
+  file:
+    path: "{{ item.folder }}"
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+  with_items: "{{ samba_shares }}"
+
+- name: Define global options in Samba's config
+  blockinfile:
+    path: /etc/samba/smb.conf
+    insertafter: "^\\[global\\]"
+    marker_begin: "GLOBAL_OPTIONS BEGIN"
+    marker_end: "GLOBAL_OPTIONS END"
+    block: "{{ lookup('template', 'samba_general.j2') }}"
+  notify:
+    - restart_samba
+
+- name: Define the shares in Samba's config
+  blockinfile:
+    path: /etc/samba/smb.conf
+    marker_begin: "SHARES BEGIN"
+    marker_end: "SHARES END"
+    block: "{{ lookup('template', 'samba_shares.j2') }}"
+  notify:
+    - restart_samba
