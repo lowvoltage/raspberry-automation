@@ -10,26 +10,10 @@
   gather_facts: no
   become: yes
 
+  roles:
+    - add_ssh_keys
+
   tasks:
-    - name: Validate Configuration
-      assert:
-        that: ssh_github_user is defined or ssh_public_key_files is defined
-
-    - name: Deploy local SSH Keys
-      authorized_key:
-        user: "{{ ansible_user }}"
-        key: "{{ lookup('file', item) }}"
-        state: present
-      with_items: "{{ ssh_public_key_files }} "
-      when: ssh_public_key_files is defined
-
-    - name: Deploy SSH Keys from GitHub
-      authorized_key:
-        user: "{{ ansible_user }}"
-        key: "https://github.com/{{ ssh_github_user }}.keys"
-        state: present
-      when: ssh_github_user is defined
-
     - name: Disable Password Authentication
       lineinfile:
         dest: /etc/ssh/sshd_config
@@ -44,4 +28,3 @@
       service:
         name: sshd
         state: restarted
-

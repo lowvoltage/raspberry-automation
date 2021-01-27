@@ -1,0 +1,8 @@
+---
+# SSH keys' setup: At lest one of the two options should be defined
+
+# ssh_github_user: lowvoltage
+
+ssh_public_key_files:
+- ~/.ssh/id_rsa.pub
+- ~/.ssh/id_ed25519.pub
